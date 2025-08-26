@@ -1,4 +1,5 @@
 #include "headers/window.hpp"
+#include <SDL2/SDL_opengl.h>
 
 
 Window::Window(const char* name, int Width, int Height, API GraphicsAPI)
@@ -34,7 +35,7 @@ int Window::init() {
         return -1;
     }
 
-    if (GraphicsAPI == API::OPENGL) {
+    if (this->GraphicsAPI == API::OPENGL) {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -47,7 +48,7 @@ int Window::init() {
         GPUFlag
     );
 
-    if (GraphicsAPI == API::OPENGL) {
+    if (this->GraphicsAPI == API::OPENGL) {
         glContext = SDL_GL_CreateContext(sdlWindow);
         if (!glContext) {
                 std::cerr << "Failed to create OpenGL context: " << SDL_GetError() << "\n";
@@ -58,3 +59,20 @@ int Window::init() {
     return 0;
 }
 
+void Window::clear() {
+    if (this->GraphicsAPI == API::OPENGL) {
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+}
+
+
+void Window::SetClearColor(float r, float g, float b, float alpha) {
+    glClearColor(r, g, b, alpha);
+}
+
+
+void Window::update() {
+    if (this->GraphicsAPI == API::OPENGL) {
+        SDL_GL_SwapWindow(this->sdlWindow);
+    }
+}
