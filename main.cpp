@@ -1,7 +1,9 @@
 #include "headers/window.hpp"
+#include "headers/renderpipeline.hpp"
 
 int main() {
     Window Game("Game", 800, 600, API::OPENGL);
+
 
     if (Game.init() != 0) return -1;
 

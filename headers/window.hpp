@@ -10,6 +10,10 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 enum class API {
@@ -42,14 +46,16 @@ struct RCuint {
     int ErrorCode               = 0;
 };
 
-struct RCTexture {
+struct RCMaterial {
     RCuint Albedo, Normal, Specular, Metallic, Emission;
 };
 
 struct RCMesh {
-    RCTexture textures;
+    RCMaterial textures;
     RCuint mesh;
     size_t vertexCount;
+    bool UseDefaultProgram;
+    RCuint ShaderProgram;
 };
 
 enum class RCEnum {
@@ -122,4 +128,6 @@ public:
     RCMesh LoadOBJ(const std::string& filename, TextureSuiteRC tex);
 
     RCuint AddShader(const char* filename, RCEnum Type);
+
+    void UseShader(RCuint ShaderProgram);
 };

@@ -118,7 +118,7 @@ int Window::init() {
 
 void Window::clear() {
     if (this->GraphicsAPI == API::OPENGL) {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 }
 
@@ -168,8 +168,9 @@ RCMesh Window::UploadMesh(RawMeshRC mesh) {
         return output;
     }
 
-    // API not supported
+
     output.mesh.ErrorCode = 1;
+    output.UseDefaultProgram = true;
     return output;
 }
 
@@ -319,6 +320,14 @@ RCuint Window::AddShader(const char* filename, RCEnum Type) {
 
             default:
                 std::cout << "Invalid RCEnum type. Must be either RC_VERT or RC_FRAG, RC_COMPILE to compile" << std::endl;
+                return RCuint({.ErrorCode=1});
         }
+    }
+    return RCuint({.ErrorCode=0});
+}
+
+void Window::UseShader(RCuint ShaderProgram) {
+    if (this->GraphicsAPI == API::OPENGL) {
+        glUseProgram(ShaderProgram.GL_SHAD);
     }
 }
