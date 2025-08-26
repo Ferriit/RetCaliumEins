@@ -1,5 +1,4 @@
 #include "headers/window.hpp"
-#include <SDL2/SDL_opengl.h>
 
 
 Window::Window(const char* name, int Width, int Height, API GraphicsAPI)
@@ -51,9 +50,13 @@ int Window::init() {
     if (this->GraphicsAPI == API::OPENGL) {
         glContext = SDL_GL_CreateContext(sdlWindow);
         if (!glContext) {
-                std::cerr << "Failed to create OpenGL context: " << SDL_GetError() << "\n";
-                return -1;
-            }
+            std::cerr << "Failed to create OpenGL context: " << SDL_GetError() << "\n";
+            return -1;
+        }
+
+        int w, h;
+        SDL_GetWindowSize(sdlWindow, &w, &h);
+        glViewport(0, 0, w, h);
     }
 
     return 0;
@@ -75,4 +78,53 @@ void Window::update() {
     if (this->GraphicsAPI == API::OPENGL) {
         SDL_GL_SwapWindow(this->sdlWindow);
     }
+}
+
+
+Mesh Window::UploadMesh(float vertices[], size_t vertexCount) {
+    GLuint VAO, VBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // Upload the correct number of bytes
+    glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(float), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    return Mesh({VAO, VBO});
+}
+
+
+
+GLuint Window::UploadTexture(const char* path) {
+    SDL_Surface* surface = IMG_Load(path);
+    if (!surface) {
+        std::cerr << "Failed to load texture: " << IMG_GetError() << "\n";
+        return 0;
+    }
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    GLenum format = surface->format->BytesPerPixel == 4 ? GL_RGBA : GL_RGB;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, format, surface->w, surface->h, 0,
+                 format, GL_UNSIGNED_BYTE, surface->pixels);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    SDL_FreeSurface(surface);
+    return texture;
 }

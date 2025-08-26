@@ -11,6 +11,9 @@ int main() {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = false;
         }
+        Game.SetClearColor(0.6f, 0.8f, 1.0f, 1.0f);
+        Game.clear();
+        Game.update();
     }
 
     return 0;
