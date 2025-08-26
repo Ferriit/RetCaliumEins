@@ -4,7 +4,7 @@ SOURCES = main.cpp window.cpp
 OBJS = $(SOURCES:.cpp=.o)
 
 CXXFLAGS = $(shell sdl2-config --cflags) -std=c++17
-LDFLAGS = $(shell sdl2-config --libs) -lGL -lGLEW -lSDL2_image
+LDFLAGS = $(shell sdl2-config --libs) -lGL -lGLEW -lSDL2_image -lvulkan
 
 all: $(TARGET)
 
