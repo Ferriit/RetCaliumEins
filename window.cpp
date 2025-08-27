@@ -151,7 +151,14 @@ RCMesh Window::UploadMesh(RawMeshRC mesh) {
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, mesh.vertexCount * sizeof(float), mesh.vertices.data(), GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        // Position
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+            
+        // Color
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
         glEnableVertexAttribArray(0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -299,7 +306,7 @@ RCMesh Window::LoadOBJ(const std::string& filename, TextureSuiteRC tex) {
     std::vector<float> DataVec(vertex_data.data(), vertex_data.data() + vertex_data.size());
     RawMeshRC out = { 
         .textures=tex, 
-        .vertexCount=vertex_data.size() * sizeof(float), 
+        .vertexCount=vertex_data.size(), 
         .vertices=DataVec};
     return this->UploadMesh(out);
 }

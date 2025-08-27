@@ -7,6 +7,22 @@ int main() {
 
     renderer.init("shaders/vert.glsl", "shaders/frag.glsl", Game);
 
+    TextureSuiteRC CubeTextures = {
+        .AlbedoPath="image.png",
+        .NormalPath="image.png",
+        .SpecularPath="image.png",
+        .MetallicPath="image.png",
+        .EmissionPath="image.png",
+    };
+
+    WorldObject Cube = WorldObject({
+        .Mesh=Game.LoadOBJ("cube.obj", CubeTextures),
+        .Transform=Vector3({0.0f, 0.0f, 0.0f}),
+        .Rotation=Vector3({0.0f, 0.0f, 0.0f}),
+        .Scale=Vector3({1.0f, 1.0f, 1.0f})
+    });
+
+    renderer.WorldObjects.push_back(Cube);
 
     bool running = true;
     SDL_Event event;
@@ -14,7 +30,7 @@ int main() {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = false;
         }
-        renderer.GameWindow->SetClearColor(0.8f, 0.9f, 1.0f, 1.0f);
+        renderer.GameWindow->SetClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         renderer.render();
     }
 
