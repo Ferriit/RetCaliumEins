@@ -16,7 +16,7 @@ struct WorldObject {
 
 class pipeline {
     public:
-        std::vector<WorldObject> WorldObjects;
+        std::vector<WorldObject*> WorldObjects;
         RCuint ShaderProgram;
         std::vector<RCMaterial> Materials;
         Window* GameWindow;

@@ -14,7 +14,7 @@ uniform sampler2D uMetallic;
 uniform sampler2D uEmission;
 
 // Simple directional light
-uniform vec3 lightDir = normalize(vec3(-0.5, -1.0, -0.3));
+uniform vec3 lightDir = normalize(vec3(0, 0, 5));
 uniform vec3 viewPos;
 
 void main()

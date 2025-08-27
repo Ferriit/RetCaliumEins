@@ -64,31 +64,31 @@ void pipeline::render() {
         for (const auto& obj : this->WorldObjects) {
             // Model matrix
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(obj.Transform.x, obj.Transform.y, obj.Transform.z));
-            model = glm::rotate(model, glm::radians(obj.Rotation.x), glm::vec3(1,0,0));
-            model = glm::rotate(model, glm::radians(obj.Rotation.y), glm::vec3(0,1,0));
-            model = glm::rotate(model, glm::radians(obj.Rotation.z), glm::vec3(0,0,1));
-            model = glm::scale(model, glm::vec3(obj.Scale.x, obj.Scale.y, obj.Scale.z));
+            model = glm::translate(model, glm::vec3(obj->Transform.x, obj->Transform.y, obj->Transform.z));
+            model = glm::rotate(model, glm::radians(obj->Rotation.x), glm::vec3(1,0,0));
+            model = glm::rotate(model, glm::radians(obj->Rotation.y), glm::vec3(0,1,0));
+            model = glm::rotate(model, glm::radians(obj->Rotation.z), glm::vec3(0,0,1));
+            model = glm::scale(model, glm::vec3(obj->Scale.x, obj->Scale.y, obj->Scale.z));
 
             glUniformMatrix4fv(uModelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
             // Bind VAO
-            glBindVertexArray(obj.Mesh.mesh.GL_VAO);
+            glBindVertexArray(obj->Mesh.mesh.GL_VAO);
 
             // Bind textures to appropriate slots
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, obj.Mesh.textures.Albedo.GL_TEX);
+            glBindTexture(GL_TEXTURE_2D, obj->Mesh.textures.Albedo.GL_TEX);
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, obj.Mesh.textures.Normal.GL_TEX);
+            glBindTexture(GL_TEXTURE_2D, obj->Mesh.textures.Normal.GL_TEX);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, obj.Mesh.textures.Specular.GL_TEX);
+            glBindTexture(GL_TEXTURE_2D, obj->Mesh.textures.Specular.GL_TEX);
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, obj.Mesh.textures.Metallic.GL_TEX);
+            glBindTexture(GL_TEXTURE_2D, obj->Mesh.textures.Metallic.GL_TEX);
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, obj.Mesh.textures.Emission.GL_TEX);
+            glBindTexture(GL_TEXTURE_2D, obj->Mesh.textures.Emission.GL_TEX);
 
             // Draw
-            glDrawArrays(GL_TRIANGLES, 0, obj.Mesh.vertexCount); // Make sure vertexCount exists
+            glDrawArrays(GL_TRIANGLES, 0, obj->Mesh.vertexCount); // Make sure vertexCount exists
 
             glBindVertexArray(0);
         }
