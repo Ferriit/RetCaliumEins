@@ -19,7 +19,7 @@ class pipeline {
         std::vector<WorldObject> WorldObjects;
         RCuint ShaderProgram;
         std::vector<RCMaterial> Materials;
-        Window GameWindow;
+        Window* GameWindow;
 
         float fov;
         float aspect;
@@ -27,10 +27,9 @@ class pipeline {
         float farPlane;
 
 
-        pipeline(std::vector<WorldObject> WorldObjects, RCuint ShaderProgram, std::vector<RCMaterial> Materials, Window GameWindow, float fov, float aspect,
-        float nearPlane, float farPlane);
+        pipeline(Window* GameWindow, float fov, float nearPlane, float farPlane);
 
-        void init(const char* VertexShaderPath, const char* FragmentShaderPath);
+        void init(const char* VertexShaderPath, const char* FragmentShaderPath, Window& Context);
 
         void render();
 };

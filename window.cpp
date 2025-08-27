@@ -108,6 +108,8 @@ int Window::init() {
             return -1;
         }
 
+        glewInit();
+
         int w, h;
         SDL_GetWindowSize(sdlWindow, &w, &h);
         glViewport(0, 0, w, h);
@@ -303,7 +305,10 @@ RCMesh Window::LoadOBJ(const std::string& filename, TextureSuiteRC tex) {
 }
 
 RCuint Window::AddShader(const char* filename, RCEnum Type) {
-    std::string Shader = LoadSource(filename);
+    std::string Shader = "";
+    if (Type != RCEnum::RC_COMPILE) {
+        Shader = LoadSource(filename);
+    }
 
     if (this->GraphicsAPI == API::OPENGL) {
         switch (Type) {
@@ -317,6 +322,7 @@ RCuint Window::AddShader(const char* filename, RCEnum Type) {
             
             case RCEnum::RC_COMPILE:
                 this->Shaders.GL_SHAD = CreateShaderProgramGL(RawShaders.Vert.c_str(), RawShaders.Frag.c_str());
+                break;
 
             default:
                 std::cout << "Invalid RCEnum type. Must be either RC_VERT or RC_FRAG, RC_COMPILE to compile" << std::endl;

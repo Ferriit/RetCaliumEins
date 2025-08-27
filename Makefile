@@ -1,6 +1,6 @@
 TARGET = main
 CXX = g++
-SOURCES = main.cpp window.cpp
+SOURCES = main.cpp window.cpp renderpipeline.cpp
 OBJS = $(SOURCES:.cpp=.o)
 
 CXXFLAGS = $(shell sdl2-config --cflags) -std=c++17

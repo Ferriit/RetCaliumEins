@@ -3,9 +3,10 @@
 
 int main() {
     Window Game("Game", 800, 600, API::OPENGL);
+    pipeline renderer(&Game, 90, 0.1f, 100.0f);
 
+    renderer.init("shaders/vert.glsl", "shaders/frag.glsl", Game);
 
-    if (Game.init() != 0) return -1;
 
     bool running = true;
     SDL_Event event;
@@ -13,9 +14,8 @@ int main() {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = false;
         }
-        Game.SetClearColor(0.6f, 0.8f, 1.0f, 1.0f);
-        Game.clear();
-        Game.update();
+        renderer.GameWindow->SetClearColor(0.8f, 0.9f, 1.0f, 1.0f);
+        renderer.render();
     }
 
     return 0;

@@ -2,23 +2,27 @@
 #include "headers/window.hpp"
 
 
-pipeline::pipeline(std::vector<WorldObject> WorldObjects, RCuint ShaderProgram, std::vector<RCMaterial> Materials, Window GameWindow, float fov, float aspect,
+pipeline::pipeline(Window* GameWindow, float fov,
         float nearPlane, float farPlane)
-: WorldObjects(WorldObjects), ShaderProgram(ShaderProgram), Materials(Materials), GameWindow(GameWindow), fov(fov), aspect(aspect), nearPlane(nearPlane), farPlane(farPlane) {};
+: GameWindow(GameWindow), fov(fov), nearPlane(nearPlane), farPlane(farPlane) {};
 
 
-void pipeline::init(const char* VertexShaderPath, const char* FragmentShaderPath) {
-    if (this->GameWindow.GraphicsAPI == API::OPENGL) {
+void pipeline::init(const char* VertexShaderPath, const char* FragmentShaderPath, Window& Context) {
+    this->GameWindow = &Context;
+
+    if (this->GameWindow->init() != 0) exit(-1);
+
+    if (this->GameWindow->GraphicsAPI == API::OPENGL) {
         // Compile shaders
-        this->GameWindow.AddShader(VertexShaderPath, RCEnum::RC_VERT);
-        this->GameWindow.AddShader(FragmentShaderPath, RCEnum::RC_FRAG);
-        this->GameWindow.AddShader("", RCEnum::RC_COMPILE);
+        this->GameWindow->AddShader(VertexShaderPath, RCEnum::RC_VERT);
+        this->GameWindow->AddShader(FragmentShaderPath, RCEnum::RC_FRAG);
+        this->GameWindow->AddShader("", RCEnum::RC_COMPILE);
 
         // Store the linked program
-        this->ShaderProgram.GL_SHAD = this->GameWindow.Shaders.GL_SHAD;
+        this->ShaderProgram.GL_SHAD = this->GameWindow->Shaders.GL_SHAD;
 
         // Use the shader
-        this->GameWindow.UseShader(this->ShaderProgram);
+        this->GameWindow->UseShader(this->ShaderProgram);
 
         // Bind textures to slots (after shader is active)
         glUniform1i(glGetUniformLocation(this->ShaderProgram.GL_SHAD, "uAlbedo"), 0);
@@ -26,16 +30,18 @@ void pipeline::init(const char* VertexShaderPath, const char* FragmentShaderPath
         glUniform1i(glGetUniformLocation(this->ShaderProgram.GL_SHAD, "uSpecular"), 2);
         glUniform1i(glGetUniformLocation(this->ShaderProgram.GL_SHAD, "uMetallic"), 3);
         glUniform1i(glGetUniformLocation(this->ShaderProgram.GL_SHAD, "uEmission"), 4);
+        
+        this->aspect = this->GameWindow->Width / (float)this->GameWindow->Height;
     }
 }
 
 
 
 void pipeline::render() {
-    this->GameWindow.clear(); // Clears color and depth buffer
+    this->GameWindow->clear(); // Clears color and depth buffer
 
     // Use the shader
-    if (this->GameWindow.GraphicsAPI == API::OPENGL) {
+    if (this->GameWindow->GraphicsAPI == API::OPENGL) {
         GLuint shader = this->ShaderProgram.GL_SHAD;
         glUseProgram(shader);
 
@@ -90,5 +96,5 @@ void pipeline::render() {
         glUseProgram(0);
     }
 
-    this->GameWindow.update(); // Swap buffers to display frame
+    this->GameWindow->update(); // Swap buffers to display frame
 }
